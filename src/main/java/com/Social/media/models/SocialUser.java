@@ -18,7 +18,7 @@ public class SocialUser {
     private Long Id;
 
     @OneToOne
-    @JoinColumn(name = "social_profile_id")
+    //@JoinColumn(name = "social_profile_id")
     private SocialProfile socialProfile;
 
     @OneToMany(mappedBy = "socialUser")
@@ -35,5 +35,6 @@ public class SocialUser {
     @Override
     public int hashCode() {
         return Objects.hash(Id); // ✅ Use only `id`
+
     }
 }

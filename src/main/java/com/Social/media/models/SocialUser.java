@@ -12,17 +12,16 @@ import java.util.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SocialUser {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
-    @OneToOne
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     //@JoinColumn(name = "social_profile_id")
     private SocialProfile socialProfile;
 
     @OneToMany(mappedBy = "socialUser")
-    public List<Post> posts = new ArrayList<>();
+    private List<Post> posts = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
@@ -30,11 +29,15 @@ public class SocialUser {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "group_id")
     )
-
     private Set<SocialGroup> groups = new HashSet<>();
-    @Override
-    public int hashCode() {
-        return Objects.hash(Id); // ✅ Use only `id`
 
+    @Override
+    public int hashCode(){
+        return Objects.hash(id);
+    }
+
+    public void setSocialProfile(SocialProfile socialProfile){
+        socialProfile.setUser(this);
+        this.socialProfile = socialProfile;
     }
 }

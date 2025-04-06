@@ -13,14 +13,18 @@ import lombok.NoArgsConstructor;
 public class SocialProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
     @OneToOne
-    @JoinColumn(name="social_user")
+    @JoinColumn(name = "social_user")
     @JsonIgnore
-    private SocialUser socialUser;
+    private SocialUser user;
 
-//    public void setUser(SocialUser socialUser) {
-//        this.socialUser = socialUser;
-//    }
+    private String description;
+
+    public void setSocialUser(SocialUser socialUser){
+        this.user = socialUser;
+        if (user.getSocialProfile() != this)
+            user.setSocialProfile(this);
+    }
 }

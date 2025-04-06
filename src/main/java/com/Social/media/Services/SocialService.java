@@ -10,9 +10,9 @@ import java.util.List;
 
 @Service
 public class SocialService {
-
     @Autowired
     SocialUserRepository socialUserRepository;
+
     public List<SocialUser> getAllUsers() {
         return socialUserRepository.findAll();
     }

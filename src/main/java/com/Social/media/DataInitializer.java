@@ -16,90 +16,86 @@ import org.springframework.context.annotation.Configuration;
 public class DataInitializer {
 
     private final SocialUserRepository userRepository;
-    private final SocialGroupRepository socialGroupRepository;
+    private final SocialGroupRepository groupRepository;
     private final SocialProfileRepository socialProfileRepository;
     private final PostRepository postRepository;
 
-    public DataInitializer(SocialUserRepository userRepository, SocialGroupRepository socialGroupRepository, SocialProfileRepository socialProfileRepository, PostRepository postRepository) {
+    public DataInitializer(SocialUserRepository userRepository, SocialGroupRepository groupRepository, SocialProfileRepository socialProfileRepository, PostRepository postRepository) {
         this.userRepository = userRepository;
-        this.socialGroupRepository = socialGroupRepository;
+        this.groupRepository = groupRepository;
         this.socialProfileRepository = socialProfileRepository;
         this.postRepository = postRepository;
     }
 
     @Bean
-    public CommandLineRunner initializeData(){
+    public CommandLineRunner initializeData() {
         return args -> {
+            // Create some users
             SocialUser user1 = new SocialUser();
             SocialUser user2 = new SocialUser();
             SocialUser user3 = new SocialUser();
-            SocialUser user4 = new SocialUser();
 
+            // Save users to the database
             userRepository.save(user1);
             userRepository.save(user2);
             userRepository.save(user3);
-            userRepository.save(user4);
 
-            SocialGroup Group1 = new SocialGroup();
-            SocialGroup Group2 = new SocialGroup();
+            // Create some groups
+            SocialGroup group1 = new SocialGroup();
+            SocialGroup group2 = new SocialGroup();
 
-            Group1.getSocialUsers().add(user1);
-            Group1.getSocialUsers().add(user2);
+            // Add users to groups
+            group1.getSocialUsers().add(user1);
+            group1.getSocialUsers().add(user2);
 
-            Group2.getSocialUsers().add(user3);
-            Group2.getSocialUsers().add(user4);
+            group2.getSocialUsers().add(user2);
+            group2.getSocialUsers().add(user3);
 
-            socialGroupRepository.save(Group1);
-            socialGroupRepository.save(Group2);
+            // Save groups to the database
+            groupRepository.save(group1);
+            groupRepository.save(group2);
 
-            user1.getGroups().add(Group1);
-            user2.getGroups().add(Group1);
-            user3.getGroups().add(Group2);
-            user4.getGroups().add(Group2);
+            // Associate users with groups
+            user1.getGroups().add(group1);
+            user2.getGroups().add(group1);
+            user2.getGroups().add(group2);
+            user3.getGroups().add(group2);
 
-//            userRepository.save(user1);
-//            userRepository.save(user2);
-//            userRepository.save(user3);
-//            userRepository.save(user4);
+            // Save users back to database to update associations
+            userRepository.save(user1);
+            userRepository.save(user2);
+            userRepository.save(user3);
 
+
+            // Create some posts
             Post post1 = new Post();
             Post post2 = new Post();
             Post post3 = new Post();
-            Post post4 = new Post();
 
+            // Associate posts with users
             post1.setSocialUser(user1);
             post2.setSocialUser(user2);
             post3.setSocialUser(user3);
-            post4.setSocialUser(user4);
 
+            // Save posts to the database (assuming you have a PostRepository)
             postRepository.save(post1);
             postRepository.save(post2);
             postRepository.save(post3);
-            postRepository.save(post4);
 
+            // Create some social profiles
             SocialProfile profile1 = new SocialProfile();
             SocialProfile profile2 = new SocialProfile();
             SocialProfile profile3 = new SocialProfile();
-            SocialProfile profile4 = new SocialProfile();
 
-            profile1.setSocialUser(user1);
-            user1.setSocialProfile(profile1);
-            profile2.setSocialUser(user2);
-            user2.setSocialProfile(profile2);
-            profile3.setSocialUser(user3);
-            user3.setSocialProfile(profile3);
-            profile4.setSocialUser(user4);
-            user4.setSocialProfile(profile4);
+            // Associate profiles with users
+            profile1.setUser(user1);
+            profile2.setUser(user2);
+            profile3.setUser(user3);
 
+            // Save profiles to the database (assuming you have a SocialProfileRepository)
             socialProfileRepository.save(profile1);
             socialProfileRepository.save(profile2);
             socialProfileRepository.save(profile3);
-            socialProfileRepository.save(profile4);
-
-            userRepository.save(user1);
-            userRepository.save(user2);
-            userRepository.save(user3);
-            userRepository.save(user4);
         };
     }
 }
